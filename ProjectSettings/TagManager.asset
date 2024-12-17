@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Ground
   - Essence
+  - BirdTrigger
+  - Slavko
+  - QuestItem
   layers:
   - Default
   - TransparentFX
