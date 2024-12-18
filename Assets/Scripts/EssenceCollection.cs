@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class EssenceCollection : MonoBehaviour
 {
-    private AbilityController abilityController;
+    private AbilityController2 abilityController;
 
     void Start()
     {
-        abilityController = FindAnyObjectByType<AbilityController>();
+        abilityController = FindAnyObjectByType<AbilityController2>();
     }
 
     void OnTriggerEnter2D(Collider2D obj)
