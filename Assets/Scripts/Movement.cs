@@ -127,8 +127,10 @@ public class Movement : MonoBehaviour
         if (isGrounded)
         {
             isDashing = false;
+            Debug.Log("Na podu sam");
         }
         else {
+            Debug.Log("U zraku sam");
         }
 
         if (isTouchingWall)
@@ -138,6 +140,7 @@ public class Movement : MonoBehaviour
         }
         else
         {
+            Debug.Log("Ne dodirujem zid");
             rb.gravityScale = 1;
         }
 
