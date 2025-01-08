@@ -45,7 +45,7 @@ public class NPCInteract : MonoBehaviour
         }
 
         if (nearBox) {
-            transform.position += (Vector3)(Vector2.left) * 10f; //Ili right ovisno u koju stranu treba pomaknuti
+            box.transform.position += (Vector3)(Vector2.right) * 10f; //Ili right ovisno u koju stranu treba pomaknuti
         }
     }
 

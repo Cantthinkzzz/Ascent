@@ -15,6 +15,5 @@ internal class AnimationStrings
     internal const string canMove="canMove";
     internal const string isAlive ="isAlive";
     internal const string isDashing="isDashing";
-
-
+    internal const string isWallSliding = "isWallSliding";
 }

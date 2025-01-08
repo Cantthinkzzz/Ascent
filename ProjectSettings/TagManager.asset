@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Ground
   - Essence
+  - QuestItem
+  - BirdTrigger
+  - Slavko
+  - Climbable
   layers:
   - Default
   - TransparentFX
@@ -16,10 +20,10 @@ TagManager:
   - 
   - 
   - 
+  - Ground
   - 
   - 
-  - 
-  - 
+  - Player
   - 
   - 
   - Background

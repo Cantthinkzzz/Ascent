@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3548727182386479517}
   - component: {fileID: 5194649349811502656}
   - component: {fileID: 7002178612125761096}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ORDI-tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
