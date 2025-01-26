@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rb;
+    SpiritInteraction spiritInteraction;
     Animator animator;
     TouchingDirections2 touchingDirections;
 
@@ -54,6 +55,9 @@ public class PlayerController : MonoBehaviour
     public float wallJumpTime = 0.5f;
     private float walljumptimer;
     private float wallJumpDirection;
+    [Header("Climb")]
+
+    public float climbSpeed=8f;
 
      [Header("Status")]
 
@@ -65,15 +69,15 @@ public class PlayerController : MonoBehaviour
     public bool unlockedDash = false;
     public bool unlockedDoubleJump = false;
     public bool unlockedWallJump = false;
-
-    [SerializeField]
     private bool usedDoubleJump = false;
-    [SerializeField]
     private bool usedAirDash = false;
     private bool _isFacingRight = true;
-    [SerializeField]
     private float coyotetimer;
     private float jumpBuffertimer;
+    [SerializeField]
+    private int _liveOn =0;
+    [SerializeField]
+    private int _fightOn = 0;
     //private float bufferedJumpDuration;
     //private float bufferedJumpStart;
     public bool CanMove { 
@@ -81,32 +85,63 @@ public class PlayerController : MonoBehaviour
             return animator.GetBool(AnimationStrings.canMove);
 
         } 
+        set {
+            animator.SetBool(AnimationStrings.canMove, value);
+        }
     }
+    public int LiveOn {
+        get {
+            return _liveOn;
+        }
+        set {
+            _liveOn=value;
+        }
+        
+    }
+    public int FightOn {
+        get {
+            return _fightOn;
+        }
+        set {
+            _fightOn=value;
+        }
+        
+    }
+
     
     private bool _isMoving = false;
     private bool _isRunning = false;
     [SerializeField]
-    private bool isWallSliding = false;
     Vector2 moveInput;
     private bool jumpInitiated = false;
-   
+    private bool _isWallSliding = false;
 
-
-   
-
-
-
+    private bool isClimbable = false;
+    private bool isClimbing =false;
+    private float _fallSpeedYDampingChangeThreshold;
 
     void Awake() {
         rb = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         touchingDirections=GetComponent<TouchingDirections2>();
         jumpBuffertimer= -1f;
+        spiritInteraction = GetComponent<SpiritInteraction>();
+        
     }
+    void Start() {
+        _fallSpeedYDampingChangeThreshold = CameraManager.instance._fallSpeedYDampingChangeThreshold;
+    }
+    
+    void Update() {
+        if(isClimbable && Mathf.Abs(moveInput.y) > 0) {     //ako je igrač na ljestvi/lijani i kreće se vertikalno, onda se penje
+            isClimbing = true;
+        }
+    }
+    
     private void FixedUpdate() {
         
         jumpParams();
-        if(!isDashing && !isWallJumping) //rb.AddForce(calculateForce()* Vector2.right); 
+        if(!isDashing && !isWallJumping && !isClimbing) //rb.AddForce(calculateForce()* Vector2.right); 
         rb.velocity = new Vector2(fixedSpeed(), rb.velocity.y);
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
 
@@ -114,6 +149,9 @@ public class PlayerController : MonoBehaviour
 
     private float fixedSpeed() {
         
+    if(isClimbing && moveInput.x ==0) return 0;    //da se igrač može odmah zaustaviti na ljestvi
+    
+    
     float targetSpeed = moveInput.x * currentMoveSpeed; // Desired speed (can be positive or negative)
     float speedDifference = targetSpeed - rb.velocity.x; // Difference between current speed and desired speed
     float activeAcc;
@@ -158,6 +196,15 @@ public class PlayerController : MonoBehaviour
     } 
     }
 
+     public bool IsWallSliding { 
+    get{
+        return _isWallSliding;
+    } private set {
+        _isWallSliding=value;
+        animator.SetBool(AnimationStrings.isWallSliding, value);
+    } 
+    }
+
     public void jumpParams() {
         
         if(touchingDirections.IsGrounded) {
@@ -165,21 +212,35 @@ public class PlayerController : MonoBehaviour
         }
         
         
-        if(touchingDirections.IsOnWall && !touchingDirections.IsGrounded && unlockedWallJump && moveInput.x!= 0) {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlideSpeed));
-            isWallSliding = true;
+        if(touchingDirections.IsOnWall && !touchingDirections.IsGrounded && unlockedWallJump && moveInput.x!= 0 && !isClimbing) {
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlideSpeed));  //ako se kliže
+            IsWallSliding = true;
         }
         else {
             
-            
         
-        isWallSliding = false;
+        
+        IsWallSliding = false;
+
+        if(isClimbing) {
+            rb.gravityScale=0f;
+            isJumping=false;
+            isDashing=false;
+            usedAirDash =false;
+            rb.velocity = new Vector2(rb.velocity.x, climbSpeed * moveInput.y);
+        }
+
         if(touchingDirections.IsGrounded) {
             if(!jumpInitiated)isJumping = false;
-            isWallSliding=false;
+            IsWallSliding=false;
             usedAirDash = false;
             rb.gravityScale = baseGravity;
             coyotetimer= coyoteTime;
+
+            if(!CameraManager.instance.IsLerningYDamping && CameraManager.instance.LerpedFromPlayerFalling) {
+                CameraManager.instance.LerpedFromPlayerFalling = false;
+                CameraManager.instance.LerpYDamping(false);
+            }
 
             if(jumpBuffertimer > 0) {
                 bufferedJump();
@@ -191,16 +252,27 @@ public class PlayerController : MonoBehaviour
         }
         else {
             jumpInitiated=false;
-            isWallSliding = false;
+            IsWallSliding = false;
             coyotetimer-= Time.deltaTime;
             jumpBuffertimer-= Time.deltaTime;
+            
+            //ako padamo brže od određene granice
+            if(rb.velocity.y <_fallSpeedYDampingChangeThreshold && !CameraManager.instance.IsLerningYDamping && !CameraManager.instance.LerpedFromPlayerFalling) {
+                CameraManager.instance.LerpYDamping(true);
+            }
+            //ako stojimo ili se dižemo
+            if(rb.velocity.y >= 0f && !CameraManager.instance.IsLerningYDamping && CameraManager.instance.LerpedFromPlayerFalling) {
+                CameraManager.instance.LerpedFromPlayerFalling = false;
+                CameraManager.instance.LerpYDamping(false);
+            }
+            
             if(isJumping) {
                 if(Mathf.Abs(rb.velocity.y) < jumpHangVelocity) {
                     rb.gravityScale=jumpHangGravity * baseGravity;
                 }
                 
             } 
-             if(rb.velocity.y < -1* jumpHangVelocity) {
+             if((rb.velocity.y < -1* jumpHangVelocity || (rb.velocity.y<0 && !isJumping)) && !isClimbing) {
                     rb.gravityScale= baseGravity*fallSpeedMultiplier;
                     rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
                 }
@@ -208,7 +280,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    #region Moving
     public float currentMoveSpeed {
         get{
            if(CanMove) {
@@ -247,8 +319,19 @@ public class PlayerController : MonoBehaviour
     public void onMove(InputAction.CallbackContext context) {
 
         moveInput = context.ReadValue<Vector2>();
-        IsMoving = moveInput != Vector2.zero;
+        IsMoving = moveInput.x !=0;
         SetMovingDirection(moveInput);
+    }
+    public void onRun(InputAction.CallbackContext context) {
+        //if(touchingDirections.IsGrounded) {
+            if(context.started) {
+            IsRunning=true;
+        }
+        else if(context.canceled) {
+            IsRunning=false;
+        }
+        //}
+        
     }
 
     private void SetMovingDirection(Vector2 moveInput)
@@ -278,14 +361,16 @@ public class PlayerController : MonoBehaviour
             } 
     }
 
+    #endregion Moving
+
 
 
     //called upon input action detecting a space press
      public void onJump(InputAction.CallbackContext context) {
         if(unlockedJumping) {
-        if (CanMove) {
+        if (CanMove && !animator.GetBool(AnimationStrings.isDashing)) {
             
-            if(!touchingDirections.IsGrounded && (usedDoubleJump || !unlockedDoubleJump) && !isWallSliding) {
+            if(!touchingDirections.IsGrounded && (usedDoubleJump || !unlockedDoubleJump) && !IsWallSliding) {
                 if(context.started) {
                     jumpBuffertimer= jumpBufferTime;              //ako je timer jos pozitivan nakon sto se uzemlji onda se svejedno obavi skok
                     //bufferedJumpStart= Time.time;
@@ -298,19 +383,21 @@ public class PlayerController : MonoBehaviour
             }
 
 
-            if(context.performed && isWallSliding) {
+            if(context.performed && IsWallSliding) {
+                    rb.velocity=new Vector2(rb.velocity.x, 0); 
                     wallJump();
                 }
             else {
 
             if(touchingDirections.IsGrounded                                         //može skočiti kad je uzemljen
-             || (!touchingDirections.IsGrounded && !usedDoubleJump && unlockedDoubleJump && !isWallSliding)                 //ili kad nije iskoristio double jump
-             || (!touchingDirections.IsGrounded && coyotetimer>0 && !isWallSliding)) {                 //ili ako nije prosao coyoteTime otkad je pao s platforme
+             || (!touchingDirections.IsGrounded && !usedDoubleJump && unlockedDoubleJump && !IsWallSliding)                 //ili kad nije iskoristio double jump
+             || (!touchingDirections.IsGrounded && coyotetimer>0 && !IsWallSliding)) {                 //ili ako nije prosao coyoteTime otkad je pao s platforme
                      
                      rb.gravityScale= baseGravity;                                   //resetira gravitaciju(važno za double jump u slučaju da je počeo dok je gravitacija bila smanjena)
-                     animator.SetTrigger(AnimationStrings.jumpTrigger);
                      isJumping=true; //pokreće jump animaciju
-                     
+                     if(context.started) {
+                        animator.SetTrigger(AnimationStrings.jumpTrigger);
+                     }
                      if(context.performed) {
                         isJumping = true;
                         jumpInitiated=true;
@@ -340,10 +427,13 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
     }
 
+    #region WallJumpLogic
+
     void wallJump() {
-          if (isWallSliding && CanMove) {
+          if (IsWallSliding && CanMove) {
         wallJumpDirection = -transform.localScale.x; // Opposite of current facing direction
         rb.velocity = new Vector2(wallJumpDirection * wallJumpVector.x, wallJumpVector.y); // Apply wall jump force
+        animator.SetTrigger(AnimationStrings.jumpTrigger);
         isWallJumping = true; // Set wall jump state
         isJumping = false; // Disable normal jumping state
         isDashing = false; // Disable dashing
@@ -357,6 +447,7 @@ public class PlayerController : MonoBehaviour
         }
 
         walljumptimer = 0; // Reset wall jump timer
+        rb.gravityScale=0;
         Invoke(nameof(CancelWallJump), wallJumpTime); // Schedule cancel of wall jump
     } else {
         walljumptimer -= Time.deltaTime; // Decrease wall jump timer if not sliding
@@ -364,29 +455,23 @@ public class PlayerController : MonoBehaviour
     }
 
     private void CancelWallJump() {
+        rb.gravityScale = baseGravity;
         isWallJumping=false;
         jumpInitiated = false; // Allow grounded logic again
     }
 
-
+    #endregion WallJumpLogic
 
     
 
-    public void onRun(InputAction.CallbackContext context) {
-        //if(touchingDirections.IsGrounded) {
-            if(context.started) {
-            IsRunning=true;
-        }
-        else if(context.canceled) {
-            IsRunning=false;
-        }
-        //}
-        
-    }
+    
+    
+    #region Dash
     public void OnDash(InputAction.CallbackContext context) {
              Debug.Log("Dashing through the snow");
              if(context.started && unlockedDash)StartCoroutine("Dash");
     }
+
 
     public IEnumerator Dash() {
         
@@ -422,6 +507,31 @@ public class PlayerController : MonoBehaviour
 
 
     }
+
+    #endregion Dash
+
+
+
+    #region ClimbProperties
+
+        private void OnTriggerEnter2D(Collider2D collision) {
+            if(collision.CompareTag("Climbable")) {
+                isClimbable=true;
+            }
+            else if(collision.CompareTag("SpiritEssence")) {
+                spiritInteraction.TriggerSpiritEvent(collision.gameObject);
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collision) {
+            if(collision.CompareTag("Climbable")) {
+                isClimbable=false;
+                isClimbing=false;
+                rb.gravityScale=baseGravity;
+            }
+        }
+
+    #endregion ClimbProperties
 
 
 
