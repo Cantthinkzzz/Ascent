@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Death : MonoBehaviour
 {
     public Animator playerAnimator;
     public ScreenFader screenFader;
+    public PlayerInput playerInput;
 
     private LastSafePoint lastSafePoint;
 
@@ -23,14 +25,16 @@ public class Death : MonoBehaviour
         if (collision.tag == "Hazard") {
             if (lastSafePoint != null)
             {
-                StartCoroutine(HandleDeathAndRespawn());
+                StartCoroutine(HandleDeathAndRespawn(collision));
             }
         }
     }
 
-    private IEnumerator HandleDeathAndRespawn()
+    private IEnumerator HandleDeathAndRespawn(Collider2D collision)
     {
+        //playerAnimator.enabled=true;
         playerAnimator.SetTrigger("Die");
+        //playerAnimator.enabled=false;
         yield return screenFader.FadeOut();
         yield return new WaitForSeconds(0.5f);
 
@@ -39,5 +43,6 @@ public class Death : MonoBehaviour
             transform.position = lastSafePoint.lastSafePoint;
         }
         yield return screenFader.FadeIn();
+        //playerAnimator.enabled=true;
     }
 }

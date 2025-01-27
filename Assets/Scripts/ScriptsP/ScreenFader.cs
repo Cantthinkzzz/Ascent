@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class ScreenFader : MonoBehaviour
 {
     public Image fadeImage; // Reference to a UI Image covering the screen
     public float fadeDuration = 0.000001f;
+
 
     private void Awake()
     {
@@ -46,6 +48,7 @@ public class ScreenFader : MonoBehaviour
                 fadeImage.color = new Color(0, 0, 0, alpha);
                 yield return null;
             }
+
         }
     }
 }
