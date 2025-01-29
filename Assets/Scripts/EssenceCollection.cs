@@ -17,10 +17,14 @@ public class EssenceCollection : MonoBehaviour
         {
             if (abilityController != null)
             {
+                
                 abilityController.essenceCount++;
             }
+        TimedChildDestruct tcd = obj.GetComponent<TimedChildDestruct>();
+            if(tcd!= null) tcd.massDestruction();
+            else Destroy(obj.gameObject);
 
-            Destroy(obj.gameObject);
+            //Destroy(obj.gameObject);
 
             Debug.Log("Pokupijo jedan esenc");
         }
