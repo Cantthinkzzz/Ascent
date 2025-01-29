@@ -14,6 +14,8 @@ public class NPCInteract : MonoBehaviour
     public GameObject slavkoQuestItem;
     public bool nearBox = false;
     public Transform box;
+    public PlayerController playerController;
+    public AudioSource audioSource;
 
     public void Interact()
     {
@@ -63,7 +65,11 @@ public class NPCInteract : MonoBehaviour
                 Debug.Log("desno");
                 rb2D.velocity = new Vector2(50f, rb2D.velocity.y);
             }
-            
+            if (audioSource != null && playerController.boxPushSound != null)
+            {
+                audioSource.PlayOneShot(playerController.boxPushSound);
+            }
+
         }
     }
 

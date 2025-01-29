@@ -5,6 +5,8 @@ using UnityEngine;
 public class EssenceCollection : MonoBehaviour
 {
     private AbilityController2 abilityController;
+    public AudioSource audioSource;
+    public PlayerController playerController;
 
     void Start()
     {
@@ -18,6 +20,10 @@ public class EssenceCollection : MonoBehaviour
             if (abilityController != null)
             {
                 abilityController.essenceCount++;
+                if (audioSource != null && playerController.essencePickupSound != null)
+                {
+                    audioSource.PlayOneShot(playerController.essencePickupSound);
+                }
             }
 
             Destroy(obj.gameObject);

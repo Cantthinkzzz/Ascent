@@ -9,6 +9,9 @@ public class Death : MonoBehaviour
     public PlayerInput playerInput;
     public Rigidbody2D rb;
 
+    public PlayerController playerController;
+    public AudioSource audioSource;
+
     private LastSafePoint lastSafePoint;
     private bool isDead = false;
 
@@ -48,6 +51,10 @@ public class Death : MonoBehaviour
         }
 
         playerAnimator.SetTrigger("Die");
+        if (audioSource != null && playerController.deathSound != null)
+        {
+            audioSource.PlayOneShot(playerController.deathSound);
+        }
 
         yield return screenFader.FadeOut();
         yield return new WaitForSeconds(0.5f);

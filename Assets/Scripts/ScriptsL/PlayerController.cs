@@ -12,10 +12,16 @@ public class PlayerController : MonoBehaviour
     SpiritInteraction spiritInteraction;
     Animator animator;
     TouchingDirections2 touchingDirections;
-    private bool wasGrounded = true;
     public AudioSource audioSource;
     public AudioClip jumpSound;
     public AudioClip fallSound;
+    public AudioClip dashSound;
+    public AudioClip wallJumpSound;
+    public AudioClip circleSound;
+    public AudioClip essencePickupSound;
+    public AudioClip deathSound;
+    public AudioClip footstepSound;
+    public AudioClip boxPushSound;
 
     [Header("Jump and fall")]
     public float jumpImpulse = 10f;   //strength of the jump
@@ -113,7 +119,7 @@ public class PlayerController : MonoBehaviour
     }
 
     
-    private bool _isMoving = false;
+    public bool _isMoving = false;
     private bool _isRunning = false;
     [SerializeField]
     Vector2 moveInput;
@@ -440,7 +446,11 @@ public class PlayerController : MonoBehaviour
 
     void wallJump() {
           if (IsWallSliding && CanMove) {
-        wallJumpDirection = -transform.localScale.x; // Opposite of current facing direction
+            if (audioSource != null && wallJumpSound != null)
+            {
+                audioSource.PlayOneShot(wallJumpSound); // Play the sound
+            }
+            wallJumpDirection = -transform.localScale.x; // Opposite of current facing direction
         rb.velocity = new Vector2(wallJumpDirection * wallJumpVector.x, wallJumpVector.y); // Apply wall jump force
         animator.SetTrigger(AnimationStrings.jumpTrigger);
         isWallJumping = true; // Set wall jump state
@@ -489,7 +499,11 @@ public class PlayerController : MonoBehaviour
         if(unlockedDash && CanMove) {
             //canDashInAir se postavlja na true prelaskom iz grounded stanja u air state
             Debug.Log("on a one horse open sleigh");
-            if(touchingDirections.IsGrounded || (!touchingDirections.IsGrounded && !usedAirDash)) {
+            if (touchingDirections.IsGrounded || (!touchingDirections.IsGrounded && !usedAirDash)) {
+                if (audioSource != null && dashSound != null)
+                {
+                    audioSource.PlayOneShot(dashSound); // Play the sound
+                }
                 animator.SetBool(AnimationStrings.isDashing, true);
                 bool keepJump = isJumping;
                 isJumping= false;
