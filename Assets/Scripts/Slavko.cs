@@ -10,6 +10,14 @@ public class Slavko : MonoBehaviour
     public Sprite panicked;
     public Sprite calm;
     public SpriteRenderer spriteRenderer;
+    public Animator animator;
+    public bool Chilling {
+         get{
+            return animator.GetBool("relaxed");
+        } set {
+            animator.SetBool("relaxed", value);
+        }
+    }
 
     private void Start()
     {

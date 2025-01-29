@@ -12,6 +12,16 @@ public class PlayerController : MonoBehaviour
     SpiritInteraction spiritInteraction;
     Animator animator;
     TouchingDirections2 touchingDirections;
+    public AudioSource audioSource;
+    public AudioClip jumpSound;
+    public AudioClip fallSound;
+    public AudioClip dashSound;
+    public AudioClip wallJumpSound;
+    public AudioClip circleSound;
+    public AudioClip essencePickupSound;
+    public AudioClip deathSound;
+    public AudioClip footstepSound;
+    public AudioClip boxPushSound;
 
     [Header("Jump and fall")]
     public float jumpImpulse = 10f;   //strength of the jump
@@ -63,14 +73,14 @@ public class PlayerController : MonoBehaviour
 
     private bool isDashing = false;      //traje li dash
     [SerializeField]
-    private bool isJumping = false;      //traje li jump
-    private bool isWallJumping = false;
+    public bool isJumping = false;      //traje li jump
+    public bool isWallJumping = false;
     public bool unlockedJumping = false;
     public bool unlockedDash = false;
     public bool unlockedDoubleJump = false;
     public bool unlockedWallJump = false;
     private bool usedDoubleJump = false;
-    private bool usedAirDash = false;
+    public bool usedAirDash = false;
     private bool _isFacingRight = true;
     private float coyotetimer;
     private float jumpBuffertimer;
@@ -109,7 +119,7 @@ public class PlayerController : MonoBehaviour
     }
 
     
-    private bool _isMoving = false;
+    public bool _isMoving = false;
     private bool _isRunning = false;
     [SerializeField]
     Vector2 moveInput;

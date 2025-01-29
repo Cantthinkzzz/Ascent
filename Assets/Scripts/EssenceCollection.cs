@@ -5,6 +5,9 @@ using UnityEngine;
 public class EssenceCollection : MonoBehaviour
 {
     private AbilityController2 abilityController;
+    public AudioSource audioSource;
+    public PlayerController playerController;
+
 
     void Start()
     {
@@ -19,6 +22,10 @@ public class EssenceCollection : MonoBehaviour
             {
                 
                 abilityController.essenceCount++;
+                if (audioSource != null && playerController.essencePickupSound != null)
+                {
+                    audioSource.PlayOneShot(playerController.essencePickupSound);
+                }
             }
         TimedChildDestruct tcd = obj.GetComponent<TimedChildDestruct>();
             if(tcd!= null) tcd.massDestruction();

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CircleAbility : MonoBehaviour
 {
+    public PlayerController playerController;
+    public AudioSource audioSource;
     public float effectRadius = 5f; 
     public float expansionSpeed = 3f; 
     public float hazardInvisibleTime = 5f; 
@@ -45,6 +47,10 @@ public class CircleAbility : MonoBehaviour
         // Start expanding the circle
 
         float currentRadius = 0f;
+         if (audioSource != null && playerController.circleSound != null)
+        {
+            audioSource.PlayOneShot(playerController.circleSound);
+        }
         while (currentRadius < effectRadius)
         {
             currentRadius += expansionSpeed * Time.deltaTime;

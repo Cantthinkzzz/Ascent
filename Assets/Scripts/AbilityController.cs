@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,14 @@ public class AbilityController : MonoBehaviour
 
     private int essenceRequired = 3; 
     private Movement movement; 
+     public ScreenFader screenFader;
+    public GameObject abilityUnlockUI;
+    public Image abilityImage;
+    public TextMeshPro abilityNameText;
+    public TextMeshPro abilityDescriptionText;
+    public AudioSource audioSource;
+    public AudioClip abilityUnlockSound;
+     public Sprite jumpIcon, dashIcon, doubleJumpIcon, wallJumpIcon, hazardRemoverIcon; 
 
     void Start()
     {
@@ -27,6 +36,7 @@ public class AbilityController : MonoBehaviour
         {
             Debug.Log("Otkljucao skakanje");
             movement.unlockedJumping = true;
+            UnlockAbility("Jump unlocked", "Press Space to jump", jumpIcon);
             essenceCount = 0;
             essenceRequired = 5;
             progresBar.maxValue = essenceRequired;
@@ -37,6 +47,7 @@ public class AbilityController : MonoBehaviour
         {
             Debug.Log("Otkljucao dash");
             movement.unlockedDash = true;
+            UnlockAbility("Dash unlocked", "Press Left Click to dash", dashIcon);
             essenceCount = 0;
             essenceRequired = 5;
             progresBar.maxValue = essenceRequired;
@@ -47,6 +58,7 @@ public class AbilityController : MonoBehaviour
         {
             Debug.Log("Otkljucao dash");
             movement.unlockedDoubleJump = true;
+            UnlockAbility("Double Jump unlocked", "Press Space after jumping for a second jump", jumpIcon);
             essenceCount = 0;
             essenceRequired = 3;
             progresBar.maxValue = essenceRequired;
@@ -57,10 +69,36 @@ public class AbilityController : MonoBehaviour
         {
             Debug.Log("Otkljucao Wall Jump");
             movement.unlockedWallJump = true;
+            UnlockAbility("Wall Jump unlocked", "Jump towards a wall to cling and press Space to jump off", jumpIcon);
             essenceCount = 0;
             essenceRequired = 5;
             progresBar.maxValue = essenceRequired;
             progresBar.value = 0;
         }
+    }
+    void UnlockAbility(string abilityName, string abilityDescription, Sprite abilityIcon)
+    {
+        Debug.Log("Unlocked: " + abilityName);
+        StartCoroutine(ShowAbilityUnlockScreen(abilityIcon, abilityName, abilityDescription));
+    }
+
+    IEnumerator ShowAbilityUnlockScreen(Sprite abilityIcon, string abilityName, string abilityDescription)
+    {
+        yield return screenFader.FadeOut(); // Fade to black
+
+        abilityUnlockUI.SetActive(true);
+        abilityImage.sprite = abilityIcon;
+        abilityNameText.text = "Ability Unlocked: " + abilityName;
+        abilityDescriptionText.text = abilityDescription;
+
+        if (audioSource != null && abilityUnlockSound != null)
+        {
+            audioSource.PlayOneShot(abilityUnlockSound);
+        }
+
+        yield return new WaitForSeconds(3f); // Wait before fading back
+
+        abilityUnlockUI.SetActive(false);
+        yield return screenFader.FadeIn(); // Fade back to normal
     }
 }

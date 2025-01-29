@@ -13,7 +13,12 @@ public class NPCInteract : MonoBehaviour
     public GameObject slavkoQuestComplete;
     public GameObject slavkoQuestItem;
     public bool nearBox = false;
+    public bool triggersNPCEvent=false;
     public Transform box;
+    public Transform essenceLocation;
+    public GameObject essence;
+    public PlayerController playerController;
+    public AudioSource audioSource;
 
     public void Interact()
     {
@@ -33,6 +38,8 @@ public class NPCInteract : MonoBehaviour
                 
             else {
                     //Spawnaj jedan esenc ili nesto idk
+                    essence.transform.position= essenceLocation.position;
+                    slavko.Chilling=true;
                     slavkoQuestComplete.SetActive(true);
                     StartCoroutine(RemoveIcon(slavkoQuestComplete));
             }
@@ -62,6 +69,10 @@ public class NPCInteract : MonoBehaviour
                 //box.transform.position += (Vector3)(Vector2.right) * 10f; //Ili right ovisno u koju stranu treba pomaknuti
                 Debug.Log("desno");
                 rb2D.velocity = new Vector2(50f, rb2D.velocity.y);
+            }
+            if (audioSource != null && playerController.boxPushSound != null)
+            {
+                audioSource.PlayOneShot(playerController.boxPushSound);
             }
             
         }
