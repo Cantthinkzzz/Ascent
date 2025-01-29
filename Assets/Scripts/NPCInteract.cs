@@ -26,12 +26,20 @@ public class NPCInteract : MonoBehaviour
         if (nearSlavko) {
                 
             if (!slavko.hasMetPlayer) {
-                    slavko.hasMetPlayer = true;
-                    slavko.spriteRenderer.sprite = slavko.calm;         
+                slavko.hasMetPlayer = true;
+                slavko.spriteRenderer.sprite = slavko.calm;
+                if (audioSource != null && playerController.slavkoSpeakSound != null)
+                {
+                    audioSource.PlayOneShot(playerController.slavkoSpeakSound);
+                }
             }
                 
             if (!slavkoQuestCompleted){
-                    slavkoQuest.SetActive(true);
+                if (audioSource != null && playerController.slavkoSpeakSound != null)
+                {
+                    audioSource.PlayOneShot(playerController.slavkoSpeakSound);
+                }
+                slavkoQuest.SetActive(true);
                     slavkoQuestItem.SetActive(true);
                     StartCoroutine(RemoveIcon(slavkoQuest));
             }

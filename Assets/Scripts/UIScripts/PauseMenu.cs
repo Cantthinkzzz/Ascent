@@ -20,32 +20,34 @@ public class PauseMenu : MonoBehaviour
         Debug.Log("STARTT");
     }
 
-    public void Pauziraj() {
+    public void Pauziraj()
+    {
         Debug.Log("POZVAO PAUSE");
         if (isPaused)
-            {
-                Time.timeScale = 1.0f;
-                MenuPause.gameObject.SetActive(false);
-                AudioListener.pause = false;
-                playerControls.Enable();
-                isPaused = false;
-            }
-            else
-            {
-                Time.timeScale = 0f;
-                MenuPause.gameObject.SetActive(true);
-                AudioListener.pause = true;
-                playerControls.Disable();
-                isPaused = true;
+        {
+            Time.timeScale = 1.0f;
+            MenuPause.gameObject.SetActive(false);
+            AudioListener.pause = false;
+            playerControls.Enable();
+            isPaused = false;
+        }
+        else
+        {
+            Time.timeScale = 0f;
+            MenuPause.gameObject.SetActive(true);
+            AudioListener.pause = true;
+            playerControls.Disable();
+            isPaused = true;
 
-            }
+        }
     }
 
-    public void StartMenu() {
+    public void StartMenu()
+    {
         Debug.Log("into start");
         isPaused = true;
         Time.timeScale = 1.0f;
-        
+
         MenuPause.gameObject.SetActive(false);
         AudioListener.pause = false;
         playerControls.Enable();
@@ -55,13 +57,15 @@ public class PauseMenu : MonoBehaviour
 
     }
 
-    public void Options() {
+    public void Options()
+    {
         MenuPause.gameObject.SetActive(false);
         OptionsMenu.gameObject.SetActive(true);
 
     }
 
-    public void Back() {
+    public void Back()
+    {
         MenuPause.gameObject.SetActive(true);
         OptionsMenu.gameObject.SetActive(false);
     }
