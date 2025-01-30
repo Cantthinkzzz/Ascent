@@ -29,7 +29,7 @@ public class StartMenu : MonoBehaviour
     }
 
     public void GameStart() {
-        SceneManager.LoadScene("SampleScene L 1");
+        SceneManager.LoadScene("Intro");
     }
 
     public void Options() {

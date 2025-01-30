@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip boxPushSound;
     public AudioClip slavkoSpeakSound;
 
+    public bool unlockedCircle;
     [Header("Jump and fall")]
     public float jumpImpulse = 10f;   //strength of the jump
     public float baseGravity = 1f;    //base gravity scale

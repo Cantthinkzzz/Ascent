@@ -9,7 +9,7 @@ public class CircleAbility : MonoBehaviour
     public float effectRadius = 5f; 
     public float expansionSpeed = 3f; 
     public float hazardInvisibleTime = 5f; 
-    private bool isClickAllowed = true;
+    public bool isClickAllowed = true;
     public float debounceTime = 3f;
 
     private LineRenderer lineRenderer;

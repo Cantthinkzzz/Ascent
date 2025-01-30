@@ -15,6 +15,7 @@ TagManager:
   - SafePoint
   - Water
   - Box
+  - EndGame
   layers:
   - Default
   - TransparentFX

@@ -8,7 +8,7 @@ public class ActivateBGM2 : MonoBehaviour
     public AudioSource song2; // Second song to deactivate and reset
 
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
@@ -46,7 +46,7 @@ public class ActivateBGM2 : MonoBehaviour
         }
 
         audioSource.Stop();
-        audioSource.volume = startVolume; // Restore volume
+        //audioSource.volume = startVolume; // Restore volume
         Debug.Log("FadeOut complete");
     }
 

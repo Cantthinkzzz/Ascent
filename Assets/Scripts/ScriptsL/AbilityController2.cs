@@ -77,6 +77,16 @@ public class AbilityController2 : MonoBehaviour
             progresBar.maxValue = essenceRequired;
             progresBar.value = 0;
         }
+        else if (essenceCount == 3 && !(movement.unlockedCircle) && movement.unlockedWallJump && movement.unlockedJumping && movement.unlockedDash && movement.unlockedDoubleJump) {
+            Debug.Log("Otkljucao circle ability");
+            UnlockAbility("Hazard Remover unlocked", "Press Right Click to activate Hazard Remover", hazardRemoverIcon);
+            movement.unlockedCircle = true;
+            essenceCount = 0;
+            essenceRequired = 5;
+            progresBar.maxValue = essenceRequired;
+            progresBar.value = 0;
+
+        }
     }
 
     void UnlockAbility(string abilityName, string abilityDescription, Sprite abilityIcon)
