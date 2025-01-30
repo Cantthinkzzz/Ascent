@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 7911869660764655628}
   - component: {fileID: 1073716300625666997}
   - component: {fileID: 7588333261295419632}
+  - component: {fileID: 9094425141009445225}
   m_Layer: 0
   m_Name: SpiritEssence
   m_TagString: SpiritEssence
@@ -155,3 +156,48 @@ MonoBehaviour:
   option1: yes
   option2: no
   leftFight: 1
+--- !u!61 &9094425141009445225
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8533251163978547669}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.096580505, y: 0.22808838}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 4.133776, y: 5.846667}
+    newSize: {x: 4.133776, y: 5.846667}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 5.0147095, y: 6.9349365}
+  m_EdgeRadius: 0

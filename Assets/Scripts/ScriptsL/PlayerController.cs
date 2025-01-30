@@ -405,6 +405,10 @@ public class PlayerController : MonoBehaviour
                      
                      rb.gravityScale= baseGravity;                                   //resetira gravitaciju(važno za double jump u slučaju da je počeo dok je gravitacija bila smanjena)
                      isJumping=true; //pokreće jump animaciju
+                      if (audioSource != null && jumpSound != null)
+                        {
+                            audioSource.PlayOneShot(jumpSound); // Play the sound
+                        }
                      if(context.started) {
                         animator.SetTrigger(AnimationStrings.jumpTrigger);
                      }
@@ -441,6 +445,10 @@ public class PlayerController : MonoBehaviour
 
     void wallJump() {
           if (IsWallSliding && CanMove) {
+             if (audioSource != null && wallJumpSound != null)
+            {
+                audioSource.PlayOneShot(wallJumpSound); // Play the sound
+            }
         wallJumpDirection = -transform.localScale.x; // Opposite of current facing direction
         rb.velocity = new Vector2(wallJumpDirection * wallJumpVector.x, wallJumpVector.y); // Apply wall jump force
         animator.SetTrigger(AnimationStrings.jumpTrigger);
@@ -491,6 +499,10 @@ public class PlayerController : MonoBehaviour
             //canDashInAir se postavlja na true prelaskom iz grounded stanja u air state
             Debug.Log("on a one horse open sleigh");
             if(touchingDirections.IsGrounded || (!touchingDirections.IsGrounded && !usedAirDash)) {
+                if (audioSource != null && dashSound != null)
+                {
+                    audioSource.PlayOneShot(dashSound); // Play the sound
+                }
                 animator.SetBool(AnimationStrings.isDashing, true);
                 bool keepJump = isJumping;
                 isJumping= false;

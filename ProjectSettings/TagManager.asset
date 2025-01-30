@@ -14,6 +14,7 @@ TagManager:
   - Hazard
   - SafePoint
   - Water
+  - Box
   layers:
   - Default
   - TransparentFX

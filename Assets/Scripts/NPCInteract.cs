@@ -55,11 +55,11 @@ public class NPCInteract : MonoBehaviour
             Vector2 boxPosition = box.transform.position;
             Bounds boxBounds = box.GetComponent<BoxCollider2D>().bounds;
             Rigidbody2D rb2D = box.GetComponent<Rigidbody2D>();
-            Debug.Log(rb2D);
+            //rb2D.constraints= RigidbodyConstraints2D.None;
+            rb2D.isKinematic=false;
             if (boxPosition.x < transform.position.x)
             {
                 //box.transform.position -= (Vector3)(Vector2.right) * 10f; //Ili right ovisno u koju stranu treba pomaknuti
-
 
                 rb2D.velocity = new Vector2(-50f, rb2D.velocity.x);
                 Debug.Log("lijevo " + rb2D.velocity);

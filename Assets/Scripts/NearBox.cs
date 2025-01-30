@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NearBox : MonoBehaviour
 {
-    public bool triggersNPCEvent = false;
+    
     void OnTriggerEnter2D(Collider2D obj)
     {
         NPCInteract interaction = obj.GetComponent<NPCInteract>();

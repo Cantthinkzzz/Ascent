@@ -17,11 +17,13 @@ public class SpiritInteraction : MonoBehaviour
     public AudioClip fadeOutSound; // Sound for screen fading out
     public AudioClip buttonClickSound; // Sound for button clicks
     public PlayerController player;
+     public AudioSource bgm;
     private PlayerInput playerInput; 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private EssenceText essenceText;
     private GameObject currentSpiritEssence; // The spirit essence being interacted with
+    private float originalVolume;
     void Awake() {
         playerInput = player.GetComponentInParent<PlayerInput>();
         rb = player.GetComponentInParent<Rigidbody2D>();
@@ -29,6 +31,11 @@ public class SpiritInteraction : MonoBehaviour
     }
     private void Start()
     {
+        GameObject bgmObject = GameObject.Find("BGM");
+        if (bgmObject != null) {
+            bgm = bgmObject.GetComponent<AudioSource>();
+            originalVolume = bgm.volume;
+        }
         fadePanel.alpha = 0;
         questionText.gameObject.SetActive(false);
         choice1Button.gameObject.SetActive(false);
@@ -43,12 +50,24 @@ public class SpiritInteraction : MonoBehaviour
         currentSpiritEssence = spiritEssence;
         StartCoroutine(FadeToBlackAndShowQuestion());
     }
+    private IEnumerator FadeAudio(float startVolume, float targetVolume, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            bgm.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        bgm.volume = targetVolume;
+    }
 
     private IEnumerator FadeToBlackAndShowQuestion()
     {
        // PlaySound(fadeOutSound); // Play fade-out sound
-
+        StartCoroutine(FadeAudio(bgm.volume, 0f, 1f));
         // Fade to black
+        fadePanel.gameObject.SetActive(true);
         playerInput.enabled=false;
         rb.velocity = new Vector2(0, rb.velocity.y);
         essenceText = currentSpiritEssence.GetComponent<EssenceText>();
@@ -90,6 +109,12 @@ public class SpiritInteraction : MonoBehaviour
         if((choice==1&& essenceText.leftFight) || (choice==2 && !essenceText.leftFight)) player.FightOn++ ;
         else player.LiveOn++;
         // Hide the question and fade back in
+        GameObject soundHolder = GameObject.Find("SoundHolder");
+        AudioHolder audioHolder = soundHolder.GetComponent<AudioHolder>();
+        if (audioHolder != null)
+        {
+            //audioHolder.playBellsAndCrows();
+        }
         StartCoroutine(FadeToClear());
     }
 
@@ -127,3 +152,6 @@ public class SpiritInteraction : MonoBehaviour
     */
 }
 
+internal class AudioHolder
+{
+}
