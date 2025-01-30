@@ -113,7 +113,7 @@ public class SpiritInteraction : MonoBehaviour
         AudioHolder audioHolder = soundHolder.GetComponent<AudioHolder>();
         if (audioHolder != null)
         {
-            //audioHolder.playBellsAndCrows();
+            audioHolder.playBellsAndCrows();
         }
         StartCoroutine(FadeToClear());
     }
@@ -128,6 +128,7 @@ public class SpiritInteraction : MonoBehaviour
         choice2Button.gameObject.SetActive(false);
 
         // Fade back to clear
+        StartCoroutine(FadeAudio(0f, originalVolume, 10f));
         while (fadePanel.alpha > 0)
         {
             fadePanel.alpha -= Time.deltaTime;
@@ -139,6 +140,7 @@ public class SpiritInteraction : MonoBehaviour
         {
             Destroy(currentSpiritEssence);
         }
+        fadePanel.gameObject.SetActive(false);
         playerInput.enabled=true;
     }
 
@@ -150,8 +152,4 @@ public class SpiritInteraction : MonoBehaviour
         }
     }
     */
-}
-
-internal class AudioHolder
-{
 }

@@ -23,21 +23,40 @@ public class LoopRoom : MonoBehaviour
     public GameObject spiritEssence;
     public List<GameObject> backgroundElementsPrefabs; // Prefabs for the background elements
     private List<GameObject> activeBackgroundElements = new List<GameObject>(); // Track active elements
+     public AudioSource bgm;
+    public AudioSource loopRoomSoruce;
+    private float originalVolume;
+    public AudioClip loopRoomTheme;
+
     void Awake() {
         startZoom = virtualCamera.m_Lens.OrthographicSize;
+         GameObject bgmObject = GameObject.Find("BGM");
+        if (bgmObject != null)
+        {
+            bgm = bgmObject.GetComponent<AudioSource>();
+            originalVolume = bgm.volume;
+        }
     }
     private void Update()
     {
         // Reset loop count if the player stops trying to exit through the right
         if (!isLooping)
         {
+            //StartCoroutine(FadeAudio(0f, originalVolume, 1f));
             currentLoopCount = 0;
+            loopRoomSoruce.Stop();
+        }
+        if (currentLoopCount >= 1) { 
+            //StartCoroutine(FadeAudio(originalVolume, 0f, 0f));
+            if (loopRoomSoruce != null && loopRoomTheme != null)
+            {
+                loopRoomSoruce.PlayOneShot(loopRoomTheme);
+            }
         }
     }
 
     void OnTriggerEnter2D(Collider2D other) {
         if(other.CompareTag("Player")) {
-
              if (originalFollowTarget == null)
                 originalFollowTarget = virtualCamera.Follow;
 
@@ -52,6 +71,18 @@ public class LoopRoom : MonoBehaviour
         }
 
     }
+     private IEnumerator FadeAudio(float startVolume, float targetVolume, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            bgm.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        bgm.volume = targetVolume;
+    }
+
      private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))

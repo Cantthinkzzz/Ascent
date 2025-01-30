@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip deathSound;
     public AudioClip footstepSound;
     public AudioClip boxPushSound;
+    public AudioClip slavkoSpeakSound;
 
     [Header("Jump and fall")]
     public float jumpImpulse = 10f;   //strength of the jump
@@ -79,13 +80,13 @@ public class PlayerController : MonoBehaviour
     public bool unlockedDash = false;
     public bool unlockedDoubleJump = false;
     public bool unlockedWallJump = false;
-    private bool usedDoubleJump = false;
+    public bool usedDoubleJump = false;
     public bool usedAirDash = false;
     private bool _isFacingRight = true;
     private float coyotetimer;
     private float jumpBuffertimer;
     [SerializeField]
-    private int _liveOn =0;
+    private int _liveOn = 0;
     [SerializeField]
     private int _fightOn = 0;
     //private float bufferedJumpDuration;
