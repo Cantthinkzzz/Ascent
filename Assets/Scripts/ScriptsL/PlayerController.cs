@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip circleSound;
     public AudioClip essencePickupSound;
     public AudioClip deathSound;
+    public AudioClip splashSound;
     public AudioClip footstepSound;
     public AudioClip boxPushSound;
     public AudioClip slavkoSpeakSound;
@@ -543,6 +544,8 @@ public class PlayerController : MonoBehaviour
                 isClimbable=true;
             }
             else if(collision.CompareTag("SpiritEssence")) {
+                Collider2D coll = collision.GetComponent<Collider2D>();
+                coll.enabled=false;
                 spiritInteraction.TriggerSpiritEvent(collision.gameObject);
             }
         }

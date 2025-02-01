@@ -26,7 +26,7 @@ public class CircleAbility : MonoBehaviour
 
     public void Circle()
     {
-        if (isClickAllowed)
+        if (isClickAllowed && playerController.unlockedCircle)
         {
             Debug.Log("KRUG");
             StartCoroutine(ActivateCircleEffect());

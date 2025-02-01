@@ -32,6 +32,55 @@ public class Death : MonoBehaviour
                 StartCoroutine(HandleDeathAndRespawn(collision));
             }
         }
+        else if(collision.tag == "Water" && !isDead) {
+            if (lastSafePoint != null)
+            {
+                StartCoroutine(HandleSplashAndRespawn(collision));
+            }
+        }
+    }
+
+    private IEnumerator HandleSplashAndRespawn(Collider2D collider) {
+        isDead = true;
+
+        if (playerInput != null)
+        {
+            playerInput.enabled = false;
+        }
+
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero; 
+            rb.isKinematic = true;
+        }
+
+        playerAnimator.SetTrigger("Die");
+        if (audioSource != null && playerController.splashSound != null)
+        {
+            audioSource.PlayOneShot(playerController.splashSound);
+        }
+
+        yield return screenFader.FadeOut();
+        yield return new WaitForSeconds(0.5f);
+
+        if (lastSafePoint != null)
+        {
+            transform.position = lastSafePoint.lastSafePoint;
+        }
+
+        if (rb != null)
+        {
+            rb.isKinematic = false; 
+        }
+
+        if (playerInput != null)
+        {
+            playerInput.enabled = true;
+        }
+
+        yield return screenFader.FadeIn();
+
+        isDead = false;
     }
 
     private IEnumerator HandleDeathAndRespawn(Collider2D collision)
