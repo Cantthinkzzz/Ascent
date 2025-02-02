@@ -19,6 +19,7 @@ public class NPCInteract : MonoBehaviour
     public GameObject essence;
     public PlayerController playerController;
     public AudioSource audioSource;
+    public SpriteRenderer eyes;
 
     public void Interact()
     {
@@ -49,6 +50,9 @@ public class NPCInteract : MonoBehaviour
                     essence.transform.position= essenceLocation.position;
                     slavko.Chilling=true;
                     slavkoQuestComplete.SetActive(true);
+                    if(eyes!= null) {
+                        eyes.enabled=true;
+                    }
                     StartCoroutine(RemoveIcon(slavkoQuestComplete));
             }
         }
