@@ -15,6 +15,8 @@ public class TheHog : MonoBehaviour
     public GameObject essence;
     public Rigidbody2D rb;
     public PlayerInput playerInput;
+    public AudioClip jumpClip;
+    public AudioSource audioSource;
     
     private int waypointNumber = 0;
 
@@ -43,6 +45,11 @@ public class TheHog : MonoBehaviour
             float distance = Vector2.Distance(nextWaypoint.position, transform.position);
             if(distance <= waypointReachedDistance) {
                 waypointNumber++;
+                if(waypointNumber==4) {
+                    if(audioSource!= null) {
+                        audioSource.PlayOneShot(jumpClip);
+                    }
+                }
                 if(waypointNumber >= waypoints.Count) {
                     transform.position=finalDestination.position;
                     essence.transform.position= essenceLocation.position;
