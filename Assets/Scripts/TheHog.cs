@@ -9,6 +9,7 @@ public class TheHog : MonoBehaviour, IDataPersistance
     public GameObject theHog;
     public List<Transform> waypoints;
     public float waypointReachedDistance = 0.01f;
+    [SerializeField]
     private Transform nextWaypoint;
     public Transform finalDestination;
     public Transform essenceLocation;
@@ -17,9 +18,9 @@ public class TheHog : MonoBehaviour, IDataPersistance
     public PlayerInput playerInput;
     public AudioClip jumpClip;
     public AudioSource audioSource;
-    
+    [SerializeField]
     private int waypointNumber = 0;
-
+[SerializeField]
     private bool running=false;
     public float sonicSpeed=12f;
     public void RunHog() {
@@ -39,30 +40,33 @@ public class TheHog : MonoBehaviour, IDataPersistance
     {
 
         running = data.hogRunning;
-        waypointNumber = data.hogWaypoint-1;
+        Debug.Log("running 2:" + data.hogRunning);
+        waypointNumber = data.hogWaypoint;
         if (waypointNumber < 0) {
             waypointNumber=0;
         }
-        transform.position = waypoints[waypointNumber].position;
         //transform.position = data.hogPos;
         Debug.Log("Waypoint: "+ data.hogWaypoint);
         if (waypointNumber >= waypoints.Count)
         {
+            Debug.Log("in");
             transform.position = finalDestination.position;
-            essence.transform.position = essenceLocation.position;
-            animator.SetBool("running", false);
+            if(essence!=null)essence.transform.position = essenceLocation.position;
+            //animator.SetBool("running", false);
             rb.isKinematic = false;
             playerInput.enabled = true;
-            running = false;
+            //running = false;
             theHog.GetComponent<SpriteRenderer>().flipX = false;
 
         }
+        else  transform.position = waypoints[waypointNumber-1].position;
 
     }
 
     public void SaveData(ref GameData data)
     {
         data.hogRunning = running;
+
         data.hogPos = transform.position;
         data.hogWaypoint = waypointNumber;
 
@@ -71,9 +75,10 @@ public class TheHog : MonoBehaviour, IDataPersistance
     // Start is called before the first frame update
     void Start()
     {
-        nextWaypoint= waypoints[waypointNumber];
+        if(!running)nextWaypoint= waypoints[waypointNumber];
     }
     void FixedUpdate() {
+        Debug.Log("running 2:" + running);
         if(running) {
             transform.position = Vector3.MoveTowards(transform.position, nextWaypoint.position, sonicSpeed * Time.deltaTime);
             float distance = Vector2.Distance(nextWaypoint.position, transform.position);

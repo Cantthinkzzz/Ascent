@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -39,7 +40,8 @@ public class TimedChildDestruct : MonoBehaviour, IDataPersistance
         //Debug.Log("Loading essence with ID: " + id + " | collected = " + collected);
         if (collected)
         {
-            spriteRenderer.gameObject.SetActive(false);
+            //spriteRenderer.gameObject.SetActive(false);
+            Destroy(transform.parent.gameObject);
         }
     }
 

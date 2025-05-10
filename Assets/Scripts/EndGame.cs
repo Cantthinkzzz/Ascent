@@ -9,6 +9,7 @@ public class EndGame : MonoBehaviour
     // Start is called before the first frame update
 
     void OnTriggerEnter2D(Collider2D other) {
+        DataManager.instance.saveGame();
         Debug.Log("load");
         if(other.CompareTag("Player")) {
             if(playerController.LiveOn + playerController.FightOn < 8){

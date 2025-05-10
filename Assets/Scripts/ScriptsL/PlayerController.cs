@@ -91,6 +91,9 @@ public class PlayerController : MonoBehaviour, IDataPersistance
     private int _liveOn = 0;
     [SerializeField]
     private int _fightOn = 0;
+
+    public Collider2D endGamePosition;
+    public Transform endGameSpawn;
     //private float bufferedJumpDuration;
     //private float bufferedJumpStart;
     public bool CanMove { 
@@ -152,7 +155,15 @@ public class PlayerController : MonoBehaviour, IDataPersistance
     }
 
     public void LoadData(GameData data) {
-        this.transform.position = data.playerPosition;
+        if(endGamePosition.bounds.Contains(data.playerPosition)) {
+            Debug.Log("contains");
+            this.transform.position = endGameSpawn.position;
+        }
+        else if(data.playerPosition.x>= endGamePosition.bounds.min.x-0.1f && data.playerPosition.y >= endGamePosition.bounds.min.y -4f) {
+            Debug.Log("close");
+            this.transform.position = endGameSpawn.position;
+        } 
+        else this.transform.position = data.playerPosition;
         this._fightOn = data.fightOnCount;
         this._liveOn = data.liveOnCount;
     }

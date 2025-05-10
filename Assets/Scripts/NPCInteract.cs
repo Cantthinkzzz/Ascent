@@ -28,6 +28,9 @@ public class NPCInteract : MonoBehaviour, IDataPersistance
         slavkoQuestCompleted = data.slavkoQuestItemPickedUp;
         slavko.hasMetPlayer = data.slavkoHasMetPlayer;
         daoJabuku = data.daoJabuku;
+        if(!daoJabuku && !slavkoQuestCompleted && slavko.hasMetPlayer) {
+            slavkoQuestItem.SetActive(true);
+        }
         if (daoJabuku) {
             essence.transform.position = essenceLocation.position;
             slavko.Chilling = true;

@@ -28,6 +28,7 @@ public class GameData
     public int hogWaypoint;
     public string currentMusicName;
     public bool loopRommOver;
+    public bool boxInHole;
 
     public GameData() {
         this.unlockedJumping = false;
@@ -52,5 +53,6 @@ public class GameData
         hogWaypoint = 0;
         currentMusicName = "";
         loopRommOver = false;
+        this.boxInHole = false;
     }
 }
