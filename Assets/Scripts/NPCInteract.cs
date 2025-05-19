@@ -12,6 +12,7 @@ public class NPCInteract : MonoBehaviour, IDataPersistance
     public Slavko slavko;
     public GameObject slavkoQuest;
     public GameObject slavkoQuestComplete;
+    public GameObject appleTutorial;
     public GameObject slavkoQuestItem;
     public bool nearBox = false;
     public bool triggersNPCEvent=false;
@@ -28,8 +29,10 @@ public class NPCInteract : MonoBehaviour, IDataPersistance
         slavkoQuestCompleted = data.slavkoQuestItemPickedUp;
         slavko.hasMetPlayer = data.slavkoHasMetPlayer;
         daoJabuku = data.daoJabuku;
-        if(!daoJabuku && !slavkoQuestCompleted && slavko.hasMetPlayer) {
+        if (!daoJabuku && !slavkoQuestCompleted && slavko.hasMetPlayer)
+        {
             slavkoQuestItem.SetActive(true);
+            appleTutorial.SetActive(true);
         }
         if (daoJabuku) {
             essence.transform.position = essenceLocation.position;
@@ -72,6 +75,7 @@ public class NPCInteract : MonoBehaviour, IDataPersistance
                 }
                     slavkoQuest.SetActive(true);
                     slavkoQuestItem.SetActive(true);
+                    appleTutorial.SetActive(true);
                     StartCoroutine(RemoveIcon(slavkoQuest));
             }
                 
@@ -87,11 +91,13 @@ public class NPCInteract : MonoBehaviour, IDataPersistance
                     StartCoroutine(RemoveIcon(slavkoQuestComplete));
             }
         }
-            
-            
-        if (nearSlavkoQuestItem) {
-                slavkoQuestCompleted = true;
-                Destroy(slavkoQuestItem);
+
+
+        if (nearSlavkoQuestItem)
+        {
+            slavkoQuestCompleted = true;
+            Destroy(slavkoQuestItem);
+            Destroy(appleTutorial);
         }
 
         if (nearBox) {

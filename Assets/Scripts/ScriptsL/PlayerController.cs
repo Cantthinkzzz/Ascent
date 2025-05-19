@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour, IDataPersistance
     [Header("Climb")]
 
     public float climbSpeed=8f;
+    public float climbHoriSpeed = 2.5f;
 
      [Header("Status")]
 
@@ -150,6 +151,7 @@ public class PlayerController : MonoBehaviour, IDataPersistance
     
     void Update() {
         if(isClimbable && Mathf.Abs(moveInput.y) > 0) {     //ako je igrač na ljestvi/lijani i kreće se vertikalno, onda se penje
+            //if(!isClimbing)rb.velocity= new Vector2(moveInput.x*climbHoriSpeed, rb.velocity.y);
             isClimbing = true;
         }
     }
@@ -177,8 +179,9 @@ public class PlayerController : MonoBehaviour, IDataPersistance
     private void FixedUpdate() {
         
         jumpParams();
-        if(!isDashing && !isWallJumping && !isClimbing) //rb.AddForce(calculateForce()* Vector2.right); 
-        rb.velocity = new Vector2(fixedSpeed(), rb.velocity.y);
+        if (!isDashing && !isWallJumping && !isClimbing) //rb.AddForce(calculateForce()* Vector2.right); 
+            rb.velocity = new Vector2(fixedSpeed(), rb.velocity.y);
+        else if (isClimbing && !animator.GetBool("isDashing")) rb.velocity = new Vector2(moveInput.x * climbHoriSpeed, moveInput.y * climbSpeed);
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
 
     }
@@ -263,6 +266,7 @@ public class PlayerController : MonoBehaviour, IDataPersistance
             isJumping=false;
             isDashing=false;
             usedAirDash =false;
+            //if(!isDashing)rb.velocity = new Vector2(0, climbSpeed * moveInput.y);
             rb.velocity = new Vector2(rb.velocity.x, climbSpeed * moveInput.y);
         }
 
